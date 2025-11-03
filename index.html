@@ -3,181 +3,286 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Numbers — Tap & Learn</title>
+  <title>משחק מספרים — ראה/שמע ולחץ</title>
   <style>
-    :root {
-      --bg: #0f172a; --card:#111827; --text:#e5e7eb; --muted:#9ca3af;
-      --accent:#38bdf8; --btn:#1f2937; --btnh:#374151;
-      --ok:#22c55e; --err:#ef4444;
+    :root{
+      --bg:#0f172a; --card:#111827; --text:#e5e7eb; --muted:#9ca3af;
+      --accent:#38bdf8; --btn:#1f2937; --btnh:#374151; --ok:#22c55e; --err:#ef4444;
     }
     *{box-sizing:border-box}
     body{
-      margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Arial;
-      background:linear-gradient(145deg,#0b1220,var(--bg)); color:var(--text);
-      display:grid; min-height:100dvh; place-items:center; padding:14px;
-      -webkit-user-select:none; user-select:none;
+      margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Arial;
+      background:linear-gradient(145deg,#0b1220,var(--bg));color:var(--text);
+      min-height:100dvh;display:grid;place-items:center;padding:14px;-webkit-user-select:none;user-select:none;
     }
-    .wrap{ width:100%; max-width:700px; background:linear-gradient(180deg,#0c111b,var(--card));
-      border:1px solid #1f2937; border-radius:16px; overflow:hidden; box-shadow:0 10px 30px rgba(0,0,0,.35)}
-    header{ display:flex; gap:8px; justify-content:space-between; align-items:center; padding:12px 12px 0 12px; flex-wrap:wrap}
-    h1{ font-size:18px; margin:0}
-    .row{ display:flex; gap:8px; flex-wrap:wrap}
-    .btn,.sel{
-      background:var(--btn); color:var(--text); border:1px solid #2b3544; border-radius:10px;
-      padding:10px 12px; font-weight:700; cursor:pointer; transition:.15s;
-    }
-    .btn:active{ transform:translateY(1px) } .btn:hover{ background:var(--btnh) }
-    main{ display:grid; gap:14px; padding:12px }
-    .bar{ display:grid; grid-template-columns:1fr auto auto auto; gap:8px; align-items:center; color:var(--muted); font-size:14px}
-    .pill{ background:#0b1220; border:1px solid #243042; padding:8px 10px; border-radius:999px; font-weight:800; color:var(--text)}
-    .big{ display:grid; place-items:center; min-height:120px; background:#0b1220; border:1px dashed #2b3544; border-radius:12px}
-    .big span{ font-size:clamp(56px,12vw,112px); font-weight:900; color:var(--accent); text-shadow:0 6px 40px rgba(56,189,248,.25)}
-    .hint{ text-align:center; font-size:14px; color:var(--muted); margin-top:-6px}
-    .pad{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; padding-bottom:12px }
+    .wrap{width:100%;max-width:760px;background:linear-gradient(180deg,#0c111b,var(--card));
+      border:1px solid #1f2937;border-radius:16px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,.35)}
+    header{display:flex;gap:8px;align-items:center;justify-content:space-between;padding:12px 12px 0 12px;flex-wrap:wrap}
+    h1{margin:0;font-size:18px}
+    .row{display:flex;gap:8px;flex-wrap:wrap}
+    .btn,.sel{background:var(--btn);color:var(--text);border:1px solid #2b3544;border-radius:10px;padding:10px 12px;font-weight:700;cursor:pointer;transition:.15s}
+    .btn:hover{background:var(--btnh)} .btn:active{transform:translateY(1px)}
+    main{display:grid;gap:14px;padding:12px}
+    .bar{display:grid;grid-template-columns:1fr auto auto auto auto;gap:8px;align-items:center;color:var(--muted);font-size:14px}
+    .pill{background:#0b1220;border:1px solid #243042;padding:8px 10px;border-radius:999px;font-weight:800;color:var(--text)}
+    .big{display:grid;place-items:center;min-height:120px;background:#0b1220;border:1px dashed #2b3544;border-radius:12px}
+    .big span{font-size:clamp(56px,12vw,112px);font-weight:900;color:var(--accent);text-shadow:0 6px 40px rgba(56,189,248,.25)}
+    .hint{text-align:center;font-size:14px;color:var(--muted);margin-top:-6px}
+    .pad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding-bottom:12px}
     .key{
-      background:linear-gradient(180deg,#0f172a,#111827);
-      border:1px solid #263142;
-      border-radius:12px;
-      padding:18px 12px;
-      font-size:clamp(22px,5vw,28px);
-      font-weight:900;
-      text-align:center;
-      cursor:pointer;
-      transition:.15s;
-      color: var(--text);
-      text-shadow: 0 1px 0 rgba(0,0,0,.35);
+      background:linear-gradient(180deg,#0f172a,#111827);border:1px solid #263142;border-radius:12px;
+      padding:18px 12px;font-size:clamp(22px,5vw,28px);font-weight:900;text-align:center;cursor:pointer;transition:.15s;
+      color:var(--text);text-shadow:0 1px 0 rgba(0,0,0,.35);
     }
-    .key:active{ transform:translateY(1px) }
-    .key:focus-visible{ outline:3px solid rgba(56,189,248,.6); outline-offset:2px }
-    .ok{ border-color:rgba(34,197,94,.7); box-shadow:0 0 0 3px rgba(34,197,94,.15) inset; background:rgba(34,197,94,.08) }
-    .bad{ border-color:rgba(239,68,68,.7); box-shadow:0 0 0 3px rgba(239,68,68,.15) inset; background:rgba(239,68,68,.08) }
-    footer{ padding:8px 12px 12px; font-size:12px; color:var(--muted); text-align:center }
+    .key:active{transform:translateY(1px)}
+    .key:focus-visible{outline:3px solid rgba(56,189,248,.6);outline-offset:2px}
+    .ok{border-color:rgba(34,197,94,.7);box-shadow:0 0 0 3px rgba(34,197,94,.15) inset;background:rgba(34,197,94,.08)}
+    .bad{border-color:rgba(239,68,68,.7);box-shadow:0 0 0 3px rgba(239,68,68,.15) inset;background:rgba(239,68,68,.08)}
+
+    /* שלב 3 – סצנה עם תמונות (אימוג'ים) */
+    .scene{
+      display:none; /* מוצג רק בשלב 3 */
+      background:#0b1220;border:1px solid #243042;border-radius:12px;padding:12px;
+    }
+    .scene.on{display:block}
+    .scene-grid{
+      display:grid;gap:10px;
+      grid-template-columns:repeat(5,minmax(40px,1fr));
+      justify-items:center;align-items:center;
+    }
+    .stamp{
+      font-size:clamp(36px,7vw,56px); filter: drop-shadow(0 2px 2px rgba(0,0,0,.25));
+      line-height:1.1;
+    }
   </style>
 </head>
 <body>
-  <div class="wrap" role="application" aria-label="Numbers Tap & Learn">
+  <div class="wrap" role="application" aria-label="משחק מספרים — עברית">
     <header>
       <h1>משחק מספרים — ראה/שמע ולחץ</h1>
       <div class="row">
         <button id="start" class="btn">התחל</button>
         <button id="next"  class="btn">שלב הבא</button>
         <button id="replay" class="btn" title="השמע שוב">השמע שוב 🔁</button>
-        <select id="lvl" class="sel" aria-label="רמת משחק">
+        <select id="lvl" class="sel" aria-label="רמה">
           <option value="1">שלב 1: לראות + לשמוע</option>
           <option value="2">שלב 2: לשמוע בלבד</option>
+          <option value="3">שלב 3: סופרים תמונות</option>
         </select>
         <select id="lang" class="sel" aria-label="שפה">
           <option value="he-IL" selected>עברית</option>
           <option value="en-US">English (US)</option>
           <option value="en-GB">English (UK)</option>
-          <option value="es-ES">Español</option>
-          <option value="fr-FR">Français</option>
+        </select>
+      </div>
+      <div class="row">
+        <button id="testBeep" class="btn">🔊 Test Beep</button>
+        <button id="testVoice" class="btn">🗣️ Test Voice</button>
+        <select id="voiceSelect" class="sel" title="בחר קול זמין (אם יש)">
+          <option value="">(Auto) בחר קול...</option>
         </select>
         <button id="tts" class="btn" aria-pressed="true">🔊 קול: פעיל</button>
       </div>
     </header>
+
     <main>
       <div class="bar">
         <div class="pill">שלב: <span id="sLvl">1</span></div>
         <div class="pill">ניקוד: <span id="sOk">0</span>/<span id="sAll">0</span></div>
         <div class="pill">רצף: <span id="sSt">0</span></div>
         <div class="pill" id="voiceStatus" title="סטטוס דיבור">קול: …</div>
+        <div class="pill" id="audioStatus" title="סטטוס אודיו">אודיו: …</div>
       </div>
-      <div class="big"><span id="big">—</span></div>
+
+      <div class="big" aria-live="polite"><span id="big">—</span></div>
+      <div id="scene" class="scene" aria-label="סצנת ספירה">
+        <div id="sceneGrid" class="scene-grid" aria-live="polite"></div>
+      </div>
+
       <div class="hint" id="hint">לחץ <b>התחל</b> כדי להתחיל.</div>
       <div class="pad" id="pad"></div>
     </main>
-    <footer>טיפ: אם אינך שומע עברית, ודא שקיים קול עברי במערכת/דפדפן. במק ניתן להוריד קולות ב-Settings → Accessibility → Spoken Content.</footer>
   </div>
+
   <script>
   (function(){
     const $ = (q)=>document.querySelector(q);
     const start=$("#start"), next=$("#next"), replay=$("#replay"), lvl=$("#lvl"), lang=$("#lang"), tts=$("#tts");
+    const testBeep=$("#testBeep"), testVoice=$("#testVoice"), voiceSelect=$("#voiceSelect");
     const sLvl=$("#sLvl"), sOk=$("#sOk"), sAll=$("#sAll"), sSt=$("#sSt");
-    const big=$("#big"), pad=$("#pad"), hint=$("#hint"), voiceStatus=$("#voiceStatus");
-    let cur=null, allow=false, tot=0, ok=0, st=0, ttsOn=true;
+    const big=$("#big"), pad=$("#pad"), hint=$("#hint"), voiceStatus=$("#voiceStatus"), audioStatus=$("#audioStatus");
+    const scene=$("#scene"), sceneGrid=$("#sceneGrid");
 
+    let cur=null, allow=false, tot=0, ok=0, st=0, ttsOn=true;
     const HE_WORDS = ["אפס","אחת","שתיים","שלוש","ארבע","חמש","שש","שבע","שמונה","תשע"];
 
-    [1,2,3,4,5,6,7,8,9,'',0,''].forEach(n=>{
-      const b=document.createElement('button'); b.className='key'; b.type='button';
-      if(n===''){ b.disabled=true; b.style.visibility='hidden'; }
-      else { b.textContent=String(n); b.setAttribute('aria-label','מספר '+n); b.addEventListener('click',()=>guess(n,b)); }
-      pad.appendChild(b);
-    });
+    /* חפצים/חיות לשלב 3 — אימוג'ים שלא דורשים קבצים חיצוניים */
+    const STAMPS = [
+      {emoji:"🐱", he:"חתולים", en:"cats"},
+      {emoji:"🐶", he:"כלבים",  en:"dogs"},
+      {emoji:"🐰", he:"ארנבים", en:"rabbits"},
+      {emoji:"🦋", he:"פרפרים", en:"butterflies"},
+      {emoji:"🐞", he:"חיפושיות", en:"ladybugs"},
+      {emoji:"🐟", he:"דגים",   en:"fish"},
+      {emoji:"🍎", he:"תפוחים", en:"apples"},
+      {emoji:"⭐", he:"כוכבים",  en:"stars"},
+      {emoji:"🌸", he:"פרחים",  en:"flowers"},
+      {emoji:"🚗", he:"מכוניות", en:"cars"}
+    ];
 
-    let ctx=null; const getCtx=()=>ctx||(ctx=new (window.AudioContext||window.webkitAudioContext)());
-    function beep(type){ const c=getCtx(), o=c.createOscillator(), g=c.createGain();
+    /* AUDIO (beep) + resume */
+    let ctx=null; function getCtx(){ if(!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)(); return ctx; }
+    async function ensureAudio(){
+      try{ const c=getCtx(); if(c.state==='suspended'){ await c.resume(); }
+        audioStatus.textContent='אודיו: ✓'; audioStatus.title='AudioContext state: '+c.state;
+      }catch(e){ audioStatus.textContent='אודיו: —'; audioStatus.title='Audio error: '+(e&&e.message); }
+    }
+    function beep(type){
+      const c=getCtx(), o=c.createOscillator(), g=c.createGain();
       o.type='sine'; o.frequency.value = type==='ok'?880:180; g.gain.value=0.0001;
       o.connect(g).connect(c.destination); o.start();
       const t=c.currentTime; g.gain.exponentialRampToValueAtTime(0.2,t+0.02);
       g.gain.exponentialRampToValueAtTime(0.0001,t+0.25); o.stop(t+0.28);
     }
 
+    /* SPEECH */
     let voicesCache=[];
-    function refreshVoices(){
-      voicesCache = speechSynthesis.getVoices();
-      updateVoiceStatus();
+    function refreshVoices(){ voicesCache=speechSynthesis.getVoices(); populateVoiceList(); updateVoiceStatus(); }
+    function populateVoiceList(){
+      const prev=voiceSelect.value; voiceSelect.innerHTML='<option value="">(Auto) בחר קול...</option>';
+      voicesCache.forEach((v,i)=>{ const opt=document.createElement('option'); opt.value=i.toString();
+        opt.textContent=`${v.name} (${v.lang})`+(v.default?' — default':''); voiceSelect.appendChild(opt); });
+      if(prev && +prev<voicesCache.length) voiceSelect.value=prev;
     }
-    function pickVoiceForLang(langTag){
-      if(!voicesCache || !voicesCache.length) return null;
-      let v = voicesCache.find(v=>v.lang===langTag) || voicesCache.find(v=>v.lang && v.lang.toLowerCase().startsWith(langTag.split('-')[0].toLowerCase()));
-      if(langTag.startsWith('he')){
-        v = voicesCache.find(v=>/^he\b/i.test(v.lang)) || v;
-      }
-      return v || null;
+    function pickVoice(langTag){
+      const idx=voiceSelect.value; if(idx){ return voicesCache[+idx]||null; }
+      if(!voicesCache.length) return null;
+      let v=voicesCache.find(v=>v.lang===langTag)||voicesCache.find(v=>v.lang&&v.lang.toLowerCase().startsWith(langTag.split('-')[0].toLowerCase()));
+      if(langTag.startsWith('he')) v=voicesCache.find(v=>/^he\b/i.test(v.lang))||v;
+      return v||null;
     }
-    function speak(n){
+    function speakText(text, langTag){
       if(!ttsOn) return;
-      const langTag = lang.value || 'he-IL';
-      const utter = new SpeechSynthesisUtterance();
-      utter.lang = langTag;
-      utter.text = langTag.startsWith('he') ? HE_WORDS[n] : String(n);
-      const v = pickVoiceForLang(langTag);
-      if(v) utter.voice = v;
-      speechSynthesis.cancel();
-      speechSynthesis.speak(utter);
-      updateVoiceStatus(v);
+      const u=new SpeechSynthesisUtterance(text); u.lang=langTag;
+      const v=pickVoice(langTag); if(v) u.voice=v;
+      speechSynthesis.cancel(); speechSynthesis.speak(u); updateVoiceStatus(v);
+    }
+    function speakNumber(n){
+      const langTag=lang.value||'he-IL';
+      const txt = langTag.startsWith('he') ? HE_WORDS[n] : String(n);
+      speakText(txt, langTag);
     }
     function updateVoiceStatus(v){
-      const langTag = lang.value || 'he-IL';
-      const have = (voicesCache && voicesCache.length) ? (pickVoiceForLang(langTag) ? "✓" : "—") : "…";
-      voiceStatus.textContent = `קול: ${have}`;
-      voiceStatus.title = (v && v.name) ? `Voice: ${v.name} (${v.lang})` : (have==="—" ? "לא נמצא קול מתאים. הדפדפן ישתמש בברירת מחדל." : "טוען קולות...");
+      const langTag=lang.value||'he-IL';
+      const have=(voicesCache&&voicesCache.length)?(pickVoice(langTag)?"✓":"—"):"…";
+      voiceStatus.textContent=`קול: ${have}`;
+      voiceStatus.title=(v&&v.name)?`Voice: ${v.name} (${v.lang})`:(have==="—"?"לא נמצא קול מתאים או אינו מותקן.":"טוען קולות...");
     }
-    if(typeof speechSynthesis!=='undefined'){
-      refreshVoices();
-      speechSynthesis.onvoiceschanged = refreshVoices;
-    }
+    if(typeof speechSynthesis!=='undefined'){ refreshVoices(); speechSynthesis.onvoiceschanged=refreshVoices; }
 
-    function rnd(){ return Math.floor(Math.random()*10); }
+    /* GAME CORE */
+    function rnd(max=10){ return Math.floor(Math.random()*max); }
+    function between(min,max){ return Math.floor(Math.random()*(max-min+1))+min; } // inclusive
     function setLvl(){ sLvl.textContent=lvl.value; }
 
+    function buildPad(){
+      pad.innerHTML='';
+      [1,2,3,4,5,6,7,8,9,'',0,''].forEach(n=>{
+        const b=document.createElement('button'); b.className='key'; b.type='button';
+        if(n===''){ b.disabled=true; b.style.visibility='hidden'; }
+        else { b.textContent=String(n); b.setAttribute('aria-label','מספר '+n);
+          b.addEventListener('click', async ()=>{ await ensureAudio(); guess(n,b); });
+        }
+        pad.appendChild(b);
+      });
+    }
+
     function round(){
-      cur=rnd(); allow=true;
-      if(lvl.value==='1'){ big.textContent=String(cur); hint.textContent='לחץ על הספרה המתאימה.'; }
-      else { big.textContent='❓'; hint.textContent='הקשב ולחץ על הספרה הנכונה.'; }
-      speak(cur);
+      // reset visuals
       document.querySelectorAll('.key').forEach(k=>k.classList.remove('ok','bad'));
+      scene.classList.remove('on');
+      sceneGrid.innerHTML='';
+      cur=null; allow=false;
+
+      const L=lvl.value;
+      if(L==='1'){
+        // see + hear (0–9)
+        cur=rnd(10); // 0..9
+        big.textContent=String(cur);
+        hint.textContent='לחץ על הספרה המתאימה.';
+        speakNumber(cur);
+        allow=true;
+      } else if(L==='2'){
+        // hear only
+        cur=rnd(10);
+        big.textContent='❓';
+        hint.textContent='הקשב ולחץ על הספרה הנכונה.';
+        speakNumber(cur);
+        allow=true;
+      } else {
+        // L === '3' — Count items (1..9)
+        cur=between(1,9);
+        const stamp=STAMPS[between(0,STAMPS.length-1)];
+        big.textContent='ספר/י וסמן/ני את המספר';
+        hint.textContent='כמה יש בתמונה?';
+        scene.classList.add('on');
+
+        // render N stamps in a grid
+        for(let i=0;i<cur;i++){
+          const d=document.createElement('div');
+          d.className='stamp';
+          d.textContent=stamp.emoji;
+          d.setAttribute('aria-label', stamp.he);
+          sceneGrid.appendChild(d);
+        }
+
+        // speak prompt (without revealing the number)
+        const langTag=lang.value||'he-IL';
+        if(langTag.startsWith('he')){
+          speakText(`כמה ${stamp.he} יש בתמונה?`, 'he-IL');
+        } else {
+          speakText(`How many ${stamp.en} are there?`, langTag);
+        }
+        allow=true;
+      }
     }
 
     function guess(n, el){
-      if(!allow||cur===null) return;
+      if(!allow) return;
       tot++; sAll.textContent=tot;
       if(n===cur){ ok++; st++; el.classList.add('ok'); beep('ok'); }
       else { st=0; el.classList.add('bad'); beep('bad');
         const c=[...document.querySelectorAll('.key')].find(b=>b.textContent===String(cur));
         if(c){ c.classList.add('ok'); setTimeout(()=>c.classList.remove('ok'), 450); }
       }
-      sOk.textContent=ok; sSt.textContent=st; allow=false; setTimeout(round, 650);
+      sOk.textContent=ok; sSt.textContent=st; allow=false; setTimeout(round, 700);
     }
 
-    start.addEventListener('click',()=>{ tot=ok=st=0; sAll.textContent=sOk.textContent=sSt.textContent='0'; setLvl(); hint.textContent='!המשחק התחיל'; round(); });
-    next.addEventListener('click',()=>{ lvl.value = (lvl.value==='1')?'2':'1'; setLvl(); if(cur!==null) round(); });
-    replay.addEventListener('click',()=>{ if(cur!==null) speak(cur); });
-    lvl.addEventListener('change',()=>{ setLvl(); if(cur!==null) round(); });
-    lang.addEventListener('change',()=>{ if(cur!==null) speak(cur); updateVoiceStatus(); });
-    tts.addEventListener('click',()=>{ ttsOn=!ttsOn; tts.textContent= ttsOn?'🔊 קול: פעיל':'🔇 קול: כבוי'; tts.setAttribute('aria-pressed', String(ttsOn)); });
+    // build UI / wire
+    buildPad();
+    start.addEventListener('click', async ()=>{ tot=ok=st=0; sAll.textContent=sOk.textContent=sSt.textContent='0';
+      setLvl(); hint.textContent='!המשחק התחיל'; await ensureAudio(); round(); });
+    next.addEventListener('click', async ()=>{ lvl.value = (lvl.value==='1')?'2':(lvl.value==='2')?'3':'1';
+      setLvl(); await ensureAudio(); round(); });
+    replay.addEventListener('click', async ()=>{ await ensureAudio();
+      if(lvl.value==='3'){ const langTag=lang.value||'he-IL';
+        if(sceneGrid.childElementCount>0){
+          const sample = langTag.startsWith('he') ? 'כמה יש בתמונה?' : 'How many are there?';
+          speakText(sample, langTag);
+        }
+      } else if(cur!==null){ speakNumber(cur); }
+    });
+    lvl.addEventListener('change', async ()=>{ setLvl(); await ensureAudio(); round(); });
+    lang.addEventListener('change', ()=>{ updateVoiceStatus(); });
+    tts.addEventListener('click', ()=>{ ttsOn=!ttsOn; tts.textContent = ttsOn?'🔊 קול: פעיל':'🔇 קול: כבוי';
+      tts.setAttribute('aria-pressed', String(ttsOn)); });
+
+    testBeep.addEventListener('click', async ()=>{ await ensureAudio(); beep('ok'); });
+    testVoice.addEventListener('click', ()=>{ const sample=(lang.value.startsWith('he'))?'בדיקת קול בעברית':'This is a voice test';
+      speakText(sample, lang.value); });
+
+    // init statuses
+    audioStatus.textContent='אודיו: …';
   })();
   </script>
 </body>
